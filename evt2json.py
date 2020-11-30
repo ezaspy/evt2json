@@ -17,7 +17,7 @@ def main():
             sys.exit()
         else:
             print("\n")
-            for root, dirs, files in os.walk(d):
+            for root, _, files in os.walk(d):
                 for eachfile in files:
                     evtfile, jsondict, jsonlist, evtjsonlist = os.path.join(root, eachfile), {}, [], []
                     if evtfile.endswith(".evtx"):
@@ -64,7 +64,7 @@ def main():
                         print("   Completed '{}'.\n".format(eachfile))
                     else:
                         pass
-            for doneroot, donedirs, donefiles in os.walk(d):
+            for doneroot, _, donefiles in os.walk(d):
                 for donefile in donefiles:
                     if os.path.exists(os.path.join(doneroot, donefile)):
                         if os.stat(os.path.join(doneroot, donefile)).st_size <= 10:
