@@ -1,5 +1,5 @@
 #!/usr/bin/env python3 -tt
-import argparse, json, os, re, shutil, subprocess, sys
+import argparse, json, os, re, shutil, subprocess, sys, time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", nargs="+", help="Source directory where EVT/EVTX files are located.")
@@ -20,9 +20,9 @@ def main():
             for root, _, files in os.walk(d):
                 for eachfile in files:
                     evtfile, jsondict, jsonlist, evtjsonlist = os.path.join(root, eachfile), {}, [], []
-                    if evtfile.endswith(".evtx"):
+                    if evtfile.endswith(".evtx") and os.stat(os.path.join(root, eachfile)).st_size > 69632:
                         if verbose:
-                            print("  Processing '{}'...".format(eachfile))
+                            print("  Processing '{}'...".format(os.path.join(root, eachfile)))
                         else:
                             pass
                         with open(os.path.join(root, eachfile)+".json", "a") as evtjson:
@@ -58,10 +58,12 @@ def main():
                                 pass
                             evtjsonlist.clear()
                             jsonlist.clear()
-                    else:
-                        pass
-                    if verbose:
-                        print("   Completed '{}'.\n".format(eachfile))
+                        if verbose:
+                            print("   Completed '{}'.\n".format(os.path.join(root, eachfile)))
+                        else:
+                            pass
+                    elif evtfile.endswith(".evtx"):
+                        print("  '{}' contains no data and thus cannot be processed.\n".format(os.path.join(root, eachfile)))
                     else:
                         pass
             for doneroot, _, donefiles in os.walk(d):
